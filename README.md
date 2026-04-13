@@ -1,58 +1,206 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel AI Assistant
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Laravel-based AI-powered application that integrates multiple AI services for content creation, translation, and multimedia processing. This application leverages OpenAI's GPT models, Whisper for speech recognition, and Murf.ai's Falcon for text-to-speech synthesis.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🔐 Authentication
+- User registration and login
+- API token authentication using Laravel Sanctum
+- Email verification support
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 📝 Posts Management
+- Create, read, update, and delete posts
+- User-specific post ownership
+- RESTful API endpoints
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🖼️ AI Image Prompt Generation
+- Upload images and generate detailed descriptive prompts using OpenAI's GPT-4 Vision
+- Store generation history with metadata
+- Search and filter generated prompts
+- Secure file storage with sanitized filenames
 
-## Learning Laravel
+### 🎙️ Audio Translation Pipeline
+- Upload audio files for transcription using OpenAI Whisper
+- Automatic language detection or manual language specification
+- Translate transcribed text using OpenAI GPT models
+- Generate streaming text-to-speech audio using Murf.ai Falcon API
+- Support for multiple languages (English, Spanish, French)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🔊 Text-to-Speech Streaming
+- Real-time audio streaming from text
+- Multiple voice options per language
+- Low-latency audio generation
+- MP3 format output
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Technology Stack
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- **Framework**: Laravel 13.x
+- **PHP**: 8.3+
+- **Database**: SQLite (configurable)
+- **AI Services**:
+  - OpenAI GPT-4o (Vision & Chat)
+  - OpenAI Whisper (Speech Recognition)
+  - Murf.ai Falcon (Text-to-Speech)
+- **Authentication**: Laravel Sanctum
+- **API Documentation**: Laravel Scramble
+- **Testing**: Pest PHP
+- **Deployment**: Docker + Nginx
 
-## Agentic Development
+## Installation
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Prerequisites
+- PHP 8.3 or higher
+- Composer
+- Docker & Docker Compose (for containerized deployment)
 
+### Local Development Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd laravel-ai
+   ```
+
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+
+3. **Environment Configuration**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Configure Environment Variables**
+   Update your `.env` file with the required API keys:
+
+   ```env
+   # Database
+   DB_CONNECTION=sqlite
+   DB_DATABASE=database/database.sqlite
+
+   # OpenAI Configuration
+   OPENAI_API_KEY=your_openai_api_key_here
+   OPENAI_API_URL=https://api.openai.com/v1
+
+   # Murf.ai Configuration
+   MURF_API_KEY=your_murf_api_key_here
+   MURF_API_URL=https://global.api.murf.ai/v1
+
+   # Application
+   APP_NAME="Laravel AI Assistant"
+   APP_URL=http://localhost:8000
+   ```
+
+5. **Database Setup**
+   ```bash
+   php artisan migrate
+   ```
+
+6. **Storage Link (for file uploads)**
+   ```bash
+   php artisan storage:link
+   ```
+
+7. **Start Development Server**
+   ```bash
+   composer run dev
+   ```
+
+   This command will start:
+   - Laravel server on `http://localhost:8000`
+   - Queue worker
+   - Log monitoring
+
+### Docker Deployment
+
+1. **Build and run containers**
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Access the application**
+   - Application: `http://localhost:83`
+   - PHP-FPM: Container `laravel-ai`
+   - Nginx: Container `laravel-ai-nginx`
+
+## API Endpoints
+
+### Authentication
+- `POST /api/login` - User login
+- `POST /api/register` - User registration
+- `POST /api/logout` - User logout
+
+### Posts (Authenticated)
+- `GET /api/v1/posts` - List posts
+- `POST /api/v1/posts` - Create post
+- `GET /api/v1/posts/{id}` - Show post
+- `PUT /api/v1/posts/{id}` - Update post
+- `DELETE /api/v1/posts/{id}` - Delete post
+
+### Image Prompt Generation (Authenticated)
+- `GET /api/v1/prompt-generations` - List user's image generations
+- `POST /api/v1/prompt-generations` - Generate prompt from uploaded image
+
+### Translation (Authenticated)
+- `POST /api/v1/translations` - Upload audio, get transcription, translation, and TTS streaming URL
+
+### Text-to-Speech (Authenticated)
+- `GET /api/v1/tts/stream` - Stream audio from text
+- `GET /api/v1/speech-voices` - Get available voices
+
+## Usage Examples
+
+### Generate Image Prompt
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+curl -X POST http://localhost:8000/api/v1/prompt-generations \
+  -H "Authorization: Bearer {your-token}" \
+  -F "image=@/path/to/image.jpg"
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Audio Translation
+```bash
+curl -X POST http://localhost:8000/api/v1/translations \
+  -H "Authorization: Bearer {your-token}" \
+  -F "audio=@/path/to/audio.mp3" \
+  -F "source_language=en" \
+  -F "target_language=es"
+```
+
+### Text-to-Speech Streaming
+```bash
+curl "http://localhost:8000/api/v1/tts/stream?text=Hello%20World&language=en" \
+  -H "Authorization: Bearer {your-token}" \
+  --output speech.mp3
+```
+
+## Testing
+
+Run the test suite using Pest PHP:
+
+```bash
+composer run test
+```
+
+## API Documentation
+
+API documentation is automatically generated using Laravel Scramble. Access it at `/docs` when the application is running.
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support, please open an issue on the GitHub repository or contact the development team.

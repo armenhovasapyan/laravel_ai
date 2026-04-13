@@ -16,7 +16,7 @@ RUN apk add --no-cache \
 # PHP extensions for Laravel + PostgreSQL, Redis, AMQP (RabbitMQ)
 RUN docker-php-ext-configure intl \
  && docker-php-ext-install -j$(nproc) \
-    pdo_pgsql \
+    pdo_mysql \
     intl \
     zip \
     bcmath \
